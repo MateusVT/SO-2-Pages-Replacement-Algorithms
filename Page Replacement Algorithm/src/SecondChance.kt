@@ -36,6 +36,7 @@ class SecondChance(private val referenceQueue: Array<Int>, private val frameSize
                         continue
                     }else{
                         pageTable[k]= referenceQueue[i]
+                       break
                     }
                 }
 
