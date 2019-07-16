@@ -1,123 +1,126 @@
-import java.util.Arrays
+class SC(private val referenceQueue: Array<Int>, private val frameSize: Int) {
 
-class SC(val referenceQueue: Array<Int>, val frameSize: Int) {
-
-//    var ref = -1
-//    var missPage = 0
-//    val pageTable: MutableList<Int> = mutableListOf()
+    private var ref = -1
+    private var secondChance = 0
+    private var pageFault = 0
+    private val pageTable = mutableListOf<Int>()
+    private var second = mutableListOf<Int>()
+    private var pointer = 0
 
 
     init {
 
-        var pointer: Int
-        var i: Int
-        val l: Int
-        var x: Int
-        var pf: Int
 
-        //initially we consider frame 0 is to be replaced
-        pointer = 0
-
-        //number of page faults
-        pf = 0
-
-        //Create a array to hold page numbers
-        val arr = IntArray(frameSize)
-
-        //No pages initially in frame,
-        //which is indicated by -1
-        Arrays.fill(arr, -1)
-
-        //Create second chance array.
-        //Can also be a byte array for optimizing memory
-        val second_chance = BooleanArray(frameSize)
-
-        //Split the string into tokens,
-        //that is page numbers, based on space
-        //referenceQueue
-
-        //get the length of array
-
-        i = 0
-        while (i < referenceQueue.size) {
-
-            x = referenceQueue[i]
-
-            //Finds if there exists a need to replace
-            //any page at all
-            if (!findAndUpdate(x, arr, second_chance, frameSize)) {
-                //Selects and updates a victim page
-                pointer = replaceAndUpdate(
-                    x, arr,
-                    second_chance, frameSize, pointer
-                )
-
-                //Update page faults
-                pf++
-            }
-            i++
+        for (i in 0 until frameSize) {//Inicializa os frames sem nenhuma página referenciada
+            pageTable.add(-1)
+            second.add(0)
         }
 
 
+        for (i in 0 until referenceQueue.size) {
 
-        println()
-//        println("Total de falta de páginas : " + missPage)
-        println("Total de falta de páginas : " + pf)
+            var adress = referenceQueue[i]
+
+            if (!findAndUpdate(adress, pageTable, second, frameSize)) {
+
+                pointer = replaceAndUpdate(adress, pageTable, second, frameSize, pointer)
+
+                print(referenceQueue[i].toString() + " -> ")
+                for (l in 0 until frameSize) {
+                    if (pageTable[l] != -1) {
+                        print(pageTable[l].toString() + " ")
+
+                    } else {
+                        print("X ")
+                    }
+                }
+                print(" | Miss (Page Not Found)") //Imprime o pageFault
+                println()
+                pageFault += 1
+
+            } else {
+                println(referenceQueue[i].toString() + " ->            | Hit (Page Found) ")// Imprime pageFound
+            }
+
+
+//            var flag = 0
+//            for (j in 0 until frameSize) {
+//                if (pageTable[j] == referenceQueue[i]) {//Se a página já estiver referenciada go to 'Hit'
+//                    flag = 1
+//                    secondChance = 1
+//                    second[j] = 1
+//                    break
+//                }
+//            }
+//            if (flag == 0) {//Não encontrou a página na memória
+//
+//                var pos = (ref + 1) % frameSize
+//
+//                for (k in 0 until frameSize) {
+//
+//                    if (second[k] == 1) {
+//                        continue
+//                    } else {
+//                        pageTable[k] = referenceQueue[i]
+//                        break
+//                    }
+//                }
+//
+////                pageTable[pos] = referenceQueue[i] //Insere a página
+//                pageFault += 1//Incrementa o pageFault
+//
+//                print(referenceQueue[i].toString() + " -> ")
+//                for (j in 0 until frameSize) {//Imprime o pageFault
+//                    if (pageTable[j] != -1) {
+//                        print(pageTable[j].toString() + " ")
+//                    } else {
+//                        print("- ")
+//                    }
+//                }
+//                print(" | Miss (Page Not Found)") //Imprime o pageFault
+//                println()
+//            } else {
+//                println(referenceQueue[i].toString() + " ->            | Hit (Page Found) ")// Imprime pageFound
+//            }
+//        }
+
+
+        }
+        println("Total de falta de páginas : $pageFault")
     }
 
-    //If page found, updates the second chance bit to true
-    fun findAndUpdate(
-        x: Int, arr: IntArray,
-        second_chance: BooleanArray, frames: Int
-    ): Boolean {
-        var i: Int
+    fun findAndUpdate(x: Int, pageTable: MutableList<Int>, second: MutableList<Int>, frameSize: Int): Boolean {
+        for (i in 0 until frameSize) {
 
-        i = 0
-        while (i < frames) {
-
-            if (arr[i] == x) {
-                //Mark that the page deserves a second chance
-                second_chance[i] = true
-
-                //Return 'true', that is there was a hit
-                //and so there's no need to replace any page
+            if (pageTable[i] == x) {
+                second[i] = 1
                 return true
             }
-            i++
         }
 
-        //Return 'false' so that a page for replacement is selected
-        //as he reuested page doesn't exist in memory
         return false
 
     }
 
-
-    //Updates the page in memory and returns the pointer
     fun replaceAndUpdate(
-        x: Int, arr: IntArray,
-        second_chance: BooleanArray, frames: Int, pointer: Int
+        adress: Int, pageTable: MutableList<Int>,
+        second: MutableList<Int>, frameSize: Int, pointer: Int
     ): Int {
-        var pointer = pointer
+        var pointerHere = pointer
         while (true) {
 
-            //We found the page to replace
-            if (!second_chance[pointer]) {
-                //Replace with new page
-                arr[pointer] = x
+            if (second[pointerHere] != 1) {
+//                println("Substituir " + pageTable[pointerHere] + " --> " + adress)
 
-                //Return updated pointer
-                return (pointer + 1) % frames
+                pageTable[pointerHere] = adress
+
+                return ((pointerHere + 1) % frameSize)
             }
 
-            //Mark it 'false' as it got one chance
-            // and will be replaced next time unless accessed again
-            second_chance[pointer] = false
+            second[pointerHere] = 0
 
-            //Pointer is updated in round robin manner
-            pointer = (pointer + 1) % frames
+            pointerHere = ((pointerHere + 1) % frameSize)
         }
     }
-
 
 }

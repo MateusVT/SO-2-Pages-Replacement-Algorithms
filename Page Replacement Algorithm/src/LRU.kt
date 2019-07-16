@@ -1,7 +1,7 @@
 class LRU(val referenceQueue: Array<Int>, val frameSize: Int) {
 
     var leastUsed = 0 //Armazena o endereço menos utilizado
-    var missPage = 0 //Contador de PageFault
+    var pageFault = 0 //Contador de PageFault
     val pageTable: MutableList<Int> = mutableListOf()//Tabela de Páginas
 
     init {
@@ -40,7 +40,7 @@ class LRU(val referenceQueue: Array<Int>, val frameSize: Int) {
                 }
                 pageTable[leastUsed] = referenceQueue[i] //Armazena o endereço no frame[leastUsed]
                 leastUsed = ((leastUsed + 1) % frameSize)
-                missPage += 1
+                pageFault += 1
                 print(referenceQueue[i].toString() + " -> ")
                 for (l in 0 until frameSize) {
                     if (pageTable[l] != -1) {
@@ -60,7 +60,7 @@ class LRU(val referenceQueue: Array<Int>, val frameSize: Int) {
 
         }
         println()
-        println("Total de falta de páginas : " + missPage)
+        println("Total de falta de páginas : " + pageFault)
     }
 
 }
