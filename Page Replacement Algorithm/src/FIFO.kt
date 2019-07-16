@@ -11,8 +11,7 @@ class FIFO(val referenceQueue: Array<Int>, val frameSize: Int) {
             pageTable.add(-1)
         }
 
-//        println("---> 0 1 2 3 4");
-//        println("")
+
         for (i in 0 until referenceQueue.size) {// referenceQueue.size == tamanho do processo
             var flag = 0
             for (j in 0 until frameSize) {
