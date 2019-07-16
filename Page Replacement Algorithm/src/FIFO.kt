@@ -11,9 +11,9 @@ class FIFO(val referenceQueue: Array<Int>, val frameSize: Int) {
             pageTable.add(-1)
         }
 
-        println("---> 0 1 2 3 4");
-        println("");
-        for (i in 0 until referenceQueue.size) {
+//        println("---> 0 1 2 3 4");
+//        println("")
+        for (i in 0 until referenceQueue.size) {// referenceQueue.size == tamanho do processo
             var flag = 0
             for (j in 0 until frameSize) {
                 if (pageTable[j] == referenceQueue[i]) {//Se a página já estiver referenciada go to 'Hit'
@@ -31,15 +31,17 @@ class FIFO(val referenceQueue: Array<Int>, val frameSize: Int) {
                     if (pageTable[j] != -1) {
                         print(pageTable[j].toString() + " ")
                     } else {
-                        print("- ")
+                        print("X ")
                     }
                 }
+                print(" | Miss (Page Not Found)")
                 println()
             } else {
-                println(referenceQueue[i].toString() + " -> Hit (Page Found) ")// Imprime pageFound
+                println(referenceQueue[i].toString() + " ->            | Hit (Page Found) ")// Imprime pageFound
 
             }
         }
+        println()
         println("Total de falta de páginas : " + missPage)
     }
 
