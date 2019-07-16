@@ -10,7 +10,6 @@ class SC(private val referenceQueue: Array<Int>, private val frameSize: Int) {
 
     init {
 
-
         for (i in 0 until frameSize) {//Inicializa os frames sem nenhuma página referenciada
             pageTable.add(-1)
             second.add(0)
@@ -43,48 +42,6 @@ class SC(private val referenceQueue: Array<Int>, private val frameSize: Int) {
             }
 
 
-//            var flag = 0
-//            for (j in 0 until frameSize) {
-//                if (pageTable[j] == referenceQueue[i]) {//Se a página já estiver referenciada go to 'Hit'
-//                    flag = 1
-//                    secondChance = 1
-//                    second[j] = 1
-//                    break
-//                }
-//            }
-//            if (flag == 0) {//Não encontrou a página na memória
-//
-//                var pos = (ref + 1) % frameSize
-//
-//                for (k in 0 until frameSize) {
-//
-//                    if (second[k] == 1) {
-//                        continue
-//                    } else {
-//                        pageTable[k] = referenceQueue[i]
-//                        break
-//                    }
-//                }
-//
-////                pageTable[pos] = referenceQueue[i] //Insere a página
-//                pageFault += 1//Incrementa o pageFault
-//
-//                print(referenceQueue[i].toString() + " -> ")
-//                for (j in 0 until frameSize) {//Imprime o pageFault
-//                    if (pageTable[j] != -1) {
-//                        print(pageTable[j].toString() + " ")
-//                    } else {
-//                        print("- ")
-//                    }
-//                }
-//                print(" | Miss (Page Not Found)") //Imprime o pageFault
-//                println()
-//            } else {
-//                println(referenceQueue[i].toString() + " ->            | Hit (Page Found) ")// Imprime pageFound
-//            }
-//        }
-
-
         }
         println("Total de falta de páginas : $pageFault")
     }
@@ -110,7 +67,6 @@ class SC(private val referenceQueue: Array<Int>, private val frameSize: Int) {
         while (true) {
 
             if (second[pointerHere] != 1) {
-//                println("Substituir " + pageTable[pointerHere] + " --> " + adress)
 
                 pageTable[pointerHere] = adress
 
