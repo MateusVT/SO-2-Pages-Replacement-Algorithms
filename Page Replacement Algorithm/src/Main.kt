@@ -35,7 +35,7 @@ fun main() {
     when (alg.toInt()) {
         1 -> FIFO(adressQueue, frameSize.toInt())
         2 -> LRU(adressQueue, frameSize.toInt())
-//        3 ->
+        3 -> SC(adressQueue, frameSize.toInt())
     }
 
 
